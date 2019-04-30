@@ -1,0 +1,16 @@
+{
+  "type": "library",
+  "name": "gomaomao/php-library",
+  "license": "MIT",
+  "homepage": "",
+  "description": "Development Library",
+  "require": {
+    "php": ">=5.4"
+  },
+  "autoload": {
+    "files": [],
+    "psr-4": {
+      "library\\": "src"
+    }
+  }
+}
