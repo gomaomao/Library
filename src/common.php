@@ -1,6 +1,9 @@
 <?php
-
 if (!function_exists('randomColor')) {
+	/**
+	 * 获取随机颜色
+	 * @return string
+	 */
 	function randomColor()
 	{
 		$str = '#';
@@ -33,6 +36,12 @@ if (!function_exists('randomColor')) {
 }
 
 if (!function_exists('randomMoney')) {
+	/**
+	 * 返回随机红包分布
+	 * @param number $total 总红包金额
+	 * @param number $num 红包数量
+	 * @return array|bool 红包数组或出错
+	 */
 	function randomMoney($total, $num)
 	{
 		$bao = [];
@@ -48,5 +57,22 @@ if (!function_exists('randomMoney')) {
 		}
 		$bao[] = $total;
 		return $bao;
+	}
+}
+
+
+if (!function_exists('getSign')) {
+	/**
+	 * @param string|array $value
+	 * @param string $key
+	 * @return string
+	 */
+	function getSign($value, $key = 'GoMaoMao')
+	{
+		if (is_array($value)) {
+			$value = arsort($value);
+			$value = http_build_query($value);
+		}
+		return md5($value . $key);
 	}
 }
