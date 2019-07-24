@@ -1,6 +1,6 @@
 <?php
 
-namespace library\tools;
+namespace gl\tools;
 
 /**
  * 数据加密解密工具
