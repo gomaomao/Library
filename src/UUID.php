@@ -48,7 +48,7 @@
  * Implements version 1, 3, 4 and 5
  */
 
-namespace gl;
+namespace gomaomao\library;
 
 class UUID
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace gl\tools;
+namespace gomaomao\library\tools;
 
 /**
  * 数据加密解密工具
