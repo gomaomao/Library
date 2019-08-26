@@ -12,7 +12,7 @@
       "src/common.php"
     ],
     "psr-4": {
-      "gomaomao\\library\\": "src"
+      "Mao\\": "src"
     }
   }
 }

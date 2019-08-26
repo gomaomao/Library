@@ -1,6 +1,6 @@
 <?php
 
-namespace gomaomao\library\tools;
+namespace Mao\Utils;
 
 /**
  * 数据加密解密工具
@@ -19,7 +19,7 @@ class Crypt
 				'6', '7', '8', '9', '+', '/'/* 索引 58 ~ 63*/];
 	}
 
-	public static function base64_rule()
+	public static function base64Rule()
 	{
 		return [
 				'url' => ['A', 'B', 'C', 'D', 'E', 'F', /* 索引 0 ~ 5*/
@@ -74,7 +74,7 @@ class Crypt
 	public
 	static function base64EncodeByRule($data, $rule = 'url', $before = '', $after = '')
 	{
-		$rules   = self::base64_rule();
+		$rules   = self::base64Rule();
 		$replace = $rules[$rule];
 		return str_replace(self::base64(), $replace, base64_encode($before . $data . $after));
 	}
@@ -87,7 +87,7 @@ class Crypt
 	public
 	static function base64DecodeByRule($str, $rule = 'url', $before = '', $after = '')
 	{
-		$rules  = self::base64_rule();
+		$rules  = self::base64Rule();
 		$find   = $rules[$rule];
 		$result = base64_decode(str_replace($find, self::base64(), $str));
 		return str_replace([$before, $after], ['', ''], $result);

@@ -48,7 +48,7 @@
  * Implements version 1, 3, 4 and 5
  */
 
-namespace gomaomao\library;
+namespace Mao;
 
 class UUID
 {
@@ -70,7 +70,7 @@ class UUID
 	const FMT_DEFAULT = 16;
 
 	/* Field UUID representation */
-	static private $m_uuid_field = array(
+	static private $mUuidField = array(
 			'time_low'      => 0,    /* 32-bit */
 			'time_mid'      => 0,    /* 16-bit */
 			'time_hi'       => 0,      /* 16-bit */
@@ -79,28 +79,28 @@ class UUID
 			'node'          => array()    /* 48-bit */
 	);
 
-	static private $m_generate = array(
+	static private $mGenerate = array(
 			self::UUID_TIME      => "generateTime",
 			self::UUID_RANDOM    => "generateRandom",
 			self::UUID_NAME_MD5  => "generateNameMD5",
 			self::UUID_NAME_SHA1 => "generateNameSHA1",
 	);
 
-	static private $m_convert = array(
+	static private $mConvert = array(
 			self::FMT_FIELD  => array(
-					self::FMT_BYTE   => "conv_field2byte",
-					self::FMT_STRING => "conv_field2string",
-					self::FMT_BINARY => "conv_field2binary",
+					self::FMT_BYTE   => "convertField2byte",
+					self::FMT_STRING => "convertField2string",
+					self::FMT_BINARY => "convertField2binary",
 			),
 			self::FMT_BYTE   => array(
-					self::FMT_FIELD  => "conv_byte2field",
-					self::FMT_STRING => "conv_byte2string",
-					self::FMT_BINARY => "conv_byte2binary",
+					self::FMT_FIELD  => "convertByte2field",
+					self::FMT_STRING => "convertByte2string",
+					self::FMT_BINARY => "convertByte2binary",
 			),
 			self::FMT_STRING => array(
-					self::FMT_BYTE   => "conv_string2byte",
-					self::FMT_FIELD  => "conv_string2field",
-					self::FMT_BINARY => "conv_string2binary",
+					self::FMT_BYTE   => "convertString2byte",
+					self::FMT_FIELD  => "convertString2field",
+					self::FMT_BINARY => "convertString2binary",
 			),
 	);
 
@@ -139,10 +139,10 @@ class UUID
 	static public function generate($type, $fmt = self::FMT_BYTE,
 	                                $node = "", $ns = "")
 	{
-		$func = self::$m_generate[$type];
+		$func = self::$mGenerate[$type];
 		if (!isset($func))
 			return null;
-		$conv = self::$m_convert[self::FMT_FIELD][$fmt];
+		$conv = self::$mConvert[self::FMT_FIELD][$fmt];
 
 		$uuid = self::$func($ns, $node);
 		return self::$conv($uuid);
@@ -153,7 +153,7 @@ class UUID
 	 */
 	static public function convert($uuid, $from, $to)
 	{
-		$conv = self::$m_convert[$from][$to];
+		$conv = self::$mConvert[$from][$to];
 		if (!isset($conv))
 			return ($uuid);
 
@@ -165,7 +165,7 @@ class UUID
 	 */
 	static private function generateRandom($ns, $node)
 	{
-		$uuid = self::$m_uuid_field;
+		$uuid = self::$mUuidField;
 
 		$uuid['time_hi']       = (4 << 12) | (mt_rand(0, 0x1000));
 		$uuid['clock_seq_hi']  = (1 << 7) | mt_rand(0, 128);
@@ -197,11 +197,12 @@ class UUID
 		/* Hash the namespace and node and convert to a byte array */
 		$val = $hash($raw, true);
 		$tmp = unpack('C16', $val);
+		$byte = [];
 		foreach (array_keys($tmp) as $key)
 			$byte[$key - 1] = $tmp[$key];
 
 		/* Convert byte array to a field array */
-		$field = self::conv_byte2field($byte);
+		$field = self::convertByte2field($byte);
 
 		$field['time_low'] = self::swap32($field['time_low']);
 		$field['time_mid'] = self::swap16($field['time_mid']);
@@ -233,7 +234,7 @@ class UUID
 	 */
 	static private function generateTime($ns, $node)
 	{
-		$uuid = self::$m_uuid_field;
+		$uuid = self::$mUuidField;
 
 		/*
 		 * Get current time in 100 ns intervals. The magic value
@@ -268,7 +269,7 @@ class UUID
 	}
 
 	/* Assumes correct byte order */
-	static private function conv_field2byte($src)
+	static private function convertField2byte($src)
 	{
 		$uuid[0] = ($src['time_low'] & 0xff000000) >> 24;
 		$uuid[1] = ($src['time_low'] & 0x00ff0000) >> 16;
@@ -287,7 +288,7 @@ class UUID
 		return ($uuid);
 	}
 
-	static private function conv_field2string($src)
+	static private function convertField2string($src)
 	{
 		$str = sprintf(
 				'%08x-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x',
@@ -298,15 +299,15 @@ class UUID
 		return ($str);
 	}
 
-	static private function conv_field2binary($src)
+	static private function convertField2binary($src)
 	{
-		$byte = self::conv_field2byte($src);
-		return self::conv_byte2binary($byte);
+		$byte = self::convertField2byte($src);
+		return self::convertByte2binary($byte);
 	}
 
-	static private function conv_byte2field($uuid)
+	static private function convertByte2field($uuid)
 	{
-		$field                  = self::$m_uuid_field;
+		$field                  = self::$mUuidField;
 		$field['time_low']      = ($uuid[0] << 24) | ($uuid[1] << 16) |
 				($uuid[2] << 8) | $uuid[3];
 		$field['time_mid']      = ($uuid[4] << 8) | $uuid[5];
@@ -319,13 +320,13 @@ class UUID
 		return ($field);
 	}
 
-	static public function conv_byte2string($src)
+	static public function convertByte2string($src)
 	{
-		$field = self::conv_byte2field($src);
-		return self::conv_field2string($field);
+		$field = self::convertByte2field($src);
+		return self::convertField2string($field);
 	}
 
-	static private function conv_byte2binary($src)
+	static private function convertByte2binary($src)
 	{
 		$raw = pack('C16', $src[0], $src[1], $src[2], $src[3],
 				$src[4], $src[5], $src[6], $src[7], $src[8], $src[9],
@@ -333,10 +334,10 @@ class UUID
 		return ($raw);
 	}
 
-	static private function conv_string2field($src)
+	static private function convertString2field($src)
 	{
 		$parts                  = sscanf($src, '%x-%x-%x-%x-%02x%02x%02x%02x%02x%02x');
-		$field                  = self::$m_uuid_field;
+		$field                  = self::$mUuidField;
 		$field['time_low']      = ($parts[0]);
 		$field['time_mid']      = ($parts[1]);
 		$field['time_hi']       = ($parts[2]);
@@ -348,16 +349,16 @@ class UUID
 		return ($field);
 	}
 
-	static private function conv_string2byte($src)
+	static private function convertString2byte($src)
 	{
-		$field = self::conv_string2field($src);
-		return self::conv_field2byte($field);
+		$field = self::convertString2field($src);
+		return self::convertField2byte($field);
 	}
 
-	static private function conv_string2binary($src)
+	static private function convertString2binary($src)
 	{
-		$byte = self::conv_string2byte($src);
-		return self::conv_byte2binary($byte);
+		$byte = self::convertString2byte($src);
+		return self::convertByte2binary($byte);
 	}
 }
 

@@ -1,10 +1,10 @@
 <?php
-if (!function_exists('randomColor')) {
+if (!function_exists('random_color')) {
 	/**
 	 * 获取随机颜色
 	 * @return string
 	 */
-	function randomColor()
+	function random_color()
 	{
 		$str = '#';
 		for ($i = 0; $i < 6; $i++) {
@@ -35,14 +35,14 @@ if (!function_exists('randomColor')) {
 	}
 }
 
-if (!function_exists('randomMoney')) {
+if (!function_exists('random_money')) {
 	/**
 	 * 返回随机红包分布
 	 * @param number $total 总红包金额
 	 * @param number $num 红包数量
 	 * @return array|bool 红包数组或出错
 	 */
-	function randomMoney($total, $num)
+	function random_money($total, $num)
 	{
 		$bao = [];
 		$min = 1;
@@ -61,13 +61,13 @@ if (!function_exists('randomMoney')) {
 }
 
 
-if (!function_exists('getSign')) {
+if (!function_exists('get_sign')) {
 	/**
 	 * @param string|array $value
 	 * @param string $key
 	 * @return string
 	 */
-	function getSign($value, $key = 'GoMaoMao')
+	function get_sign($value, $key = 'GoMaoMao')
 	{
 		if (is_array($value)) {
 			$value = arsort($value);
