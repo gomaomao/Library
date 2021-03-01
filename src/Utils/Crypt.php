@@ -43,8 +43,7 @@ class Crypt
 	 * @param string $string
 	 * @return string
 	 */
-	public
-	static function encode($string)
+	public static function encode($string)
 	{
 		list($chars, $length) = ['', strlen($content = iconv('UTF-8', 'GBK//TRANSLIT', $string))];
 		for ($i = 0; $i < $length; $i++) $chars .= str_pad(base_convert(ord($content[$i]), 10, 36), 2, 0, 0);
@@ -56,8 +55,7 @@ class Crypt
 	 * @param string $encode
 	 * @return string
 	 */
-	public
-	static function decode($encode)
+	public static function decode($encode)
 	{
 		$chars = '';
 		foreach (str_split($encode, 2) as $char) {
@@ -71,8 +69,7 @@ class Crypt
 	 * @param string $data 待编码的数据，一般为字符串
 	 * @return string 编码后的字符串
 	 */
-	public
-	static function base64EncodeByRule($data, $rule = 'url', $before = '', $after = '')
+	public static function base64EncodeByRule($data, $rule = 'url', $before = '', $after = '')
 	{
 		$rules   = self::base64Rule();
 		$replace = $rules[$rule];
@@ -84,8 +81,7 @@ class Crypt
 	 * @param string $str 待解码的数据，一般为字符串
 	 * @return string 解码后的字符串
 	 */
-	public
-	static function base64DecodeByRule($str, $rule = 'url', $before = '', $after = '')
+	public static function base64DecodeByRule($str, $rule = 'url', $before = '', $after = '')
 	{
 		$rules  = self::base64Rule();
 		$find   = $rules[$rule];
